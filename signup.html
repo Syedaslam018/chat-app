@@ -6,12 +6,14 @@
 </head>
 <body>
   <h1>Sign Up</h1>
-  <form action="/signup" method="post">
-    <input type="text" name="name" placeholder="Your name">
-    <input type="email" name="email" placeholder="Your email">
-    <input type="tel" name="phone" placeholder="Your phone number">
-    <input type="password" name="password" placeholder="Your password">
+  <form method="post" id="myForm">
+    <input type="text" name="name" placeholder="Your name" id="name">
+    <input type="email" name="email" placeholder="Your email" id="email">
+    <input type="tel" name="phone" placeholder="Your phone number" id="phno">
+    <input type="password" name="password" placeholder="Your password" id="password">
     <input type="submit" value="Sign Up">
   </form>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="signup.js"></script>
 </body>
 </html>
