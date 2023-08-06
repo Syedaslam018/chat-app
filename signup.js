@@ -7,6 +7,7 @@ const myForm = document.getElementById('myForm');
 myForm.addEventListener('submit', onSubmit);
 
 async function onSubmit(e){
+    try{
     e.preventDefault();
     const obj = {
         name:userName.value,
@@ -16,5 +17,11 @@ async function onSubmit(e){
     }
     console.log(obj)
     const data = await axios.post("http://localhost:3000/signup", obj)
-    console.log(data.data);
+    console.log(data.status);
+}
+catch(err){
+    if (err instanceof Error && err.response!== undefined ){
+        alert(`user already exists with given details`)
+    }
+}
 }
