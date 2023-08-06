@@ -11,10 +11,15 @@ app.use(cors())
 app.use(bodyParser.json({ extended: false }));
 
 const User = require('./models/users')
-const signupRoutes = require('./routes/user')
+const Messages = require('./models/messages')
+const signupRoutes = require('./routes/user');
+const appRoutes = require('./routes/chatapp');
 
 app.use(signupRoutes);
+app.use(appRoutes)
 
+User.hasMany(Messages);
+Messages.belongsTo(User);
 
 
 sequelize
