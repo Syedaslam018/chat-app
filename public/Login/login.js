@@ -17,6 +17,7 @@ async function onSubmit(e){
     displayData(post)
     localStorage.setItem('token', post.data.token)
     alert('User Logged in successfully')
+    window.location=`file:///C:/Users/aslam's/Documents/MyStuff/app-chat/public/App/app.html`
 
 }
 catch(e){
