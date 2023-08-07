@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const sequelize = require('../util/database')
+const sequelize = require('../routes/util/database')
 
 const Messages = sequelize.define('messages', {
   id: {
@@ -10,6 +10,7 @@ const Messages = sequelize.define('messages', {
     allowNull: false
   },
   text: Sequelize.STRING,
+  name: Sequelize.STRING
   
 })
 

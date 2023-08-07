@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 
-const sequelize = require('./util/database');
+const sequelize = require('./routes/util/database');
 const app = express();
 app.use(cors())
 app.use(bodyParser.json({ extended: false }));
