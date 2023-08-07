@@ -1,5 +1,6 @@
 const Messages = require('../models/messages')
 const sequelize = require('../routes/util/database')
+const { Op } = require('sequelize')
 
 exports.sendMessage = async (req, res, next) => {
     console.log(req.user.name);
@@ -17,11 +18,26 @@ exports.sendMessage = async (req, res, next) => {
     }
 }
 
-exports.getMessages = async(req, res, next) => {
+exports.getChat = async(req, res, next) => {
     const data = await Messages.findAll({
         attributes: {
-            exclude: ['id', 'userId']
+            exclude: ['userId']
         }
     })
     res.status(200).json({data: data, success: false})
+}
+
+exports.getMessages = async (req, res, next) => {
+    const start = +req.query.lastMessageId;
+    const data = await Messages.findAll({
+        where: {
+            id:{
+                [Op.gt]:start
+            }
+        },
+        attributes: {
+            exclude: ['userId', 'createdAt', 'updatedAt']
+        }
+    })
+    res.status(201).json({data:data, success:true});
 }
