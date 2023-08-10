@@ -10,7 +10,7 @@ body {
   }
   #chat-box {
     justify-content:left;
-    width: 65%;
+    width: 50%;
     height: 250px;
     border: 1px solid black;
     overflow-y: auto;
@@ -18,7 +18,7 @@ body {
   }
   
   #message-input {
-    width: 65%;
+    width: 50%;
     height: 30px;
     display:block;
     margin: auto;

@@ -61,3 +61,27 @@ exports.removeUser = async (req, res, next) => {
         res.status(401).json({message: 'error while removing the user'})
     }
 }
+
+exports.changeAdmin =async (req, res, next) => {
+    try{
+    let id = +req.body.id;
+    let email = req.body.mail;
+    let group = await Groups.findByPk(id)
+    let user = await User.findOne({where: {email:email}})
+    let check = await UserGroups.findOne({where: {
+        userId :user.id,
+        groupId:group.id
+    }})
+    if(check){
+        await group.update({createdBy: email});
+        res.status(201).json({message: 'changed admin successfully!'})
+    }
+    else{
+        res.status(401).json({message: "user doesn't exist in the group"})
+    }
+}
+catch(err){
+    console.log("Error", err);
+    res.status(403).json({message: 'some error occured while changing admin'})
+}
+}

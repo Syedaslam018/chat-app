@@ -8,7 +8,7 @@ exports.sendMessage = async (req, res, next) => {
     const t = await sequelize.transaction();
     try{
         const message = req.body.message
-        const post = await Messages.create({text:message, name: req.user.name, userId: req.user.id}, {transaction: t})  
+        const post = await Messages.create({text:message, name: req.user.name, userId: req.user.id, groupId: req.body.groupId}, {transaction: t})  
         t.commit()
         res.status(201).json({success:true, message:'message sent succesfully'});
     }
@@ -20,20 +20,13 @@ exports.sendMessage = async (req, res, next) => {
 }
 
 exports.getChat = async(req, res, next) => {
-    const sender = req.user.id
-    const reciever = req.params.userId
-    console.log(req.user.id, req.params.userId);
-    const data = await Messages.findAll({
-        where: {
-            id: {
-                [Op.or]: [sender,reciever]
-            }
-        },
-        attributes: {
-            exclude: ['groupId', 'createdAt', 'updatedAt']
+    const id  = req.params.groupId;
+    const chat = await Messages.findAll({
+        where:{
+            groupId : id
         }
     })
-    res.status(200).json({data: data, success: false})
+    res.status(200).json({data: chat, success: false})
 }
 
 exports.getMessages = async (req, res, next) => {

@@ -9,4 +9,5 @@ router.post('/createGroup', userAuthentication.authenticate, groupController.cre
 router.get('/getGroups', userAuthentication.authenticate, groupController.getGroups);
 router.post('/addToGroup', userAuthentication.authenticate, groupController.addUser)
 router.post('/removeFromGroup', userAuthentication.authenticate, groupController.removeUser)
+router.post('/changeAdmin', userAuthentication.authenticate, groupController.changeAdmin)
 module.exports = router

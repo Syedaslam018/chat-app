@@ -24,6 +24,7 @@ function displayGroups(arr){
     divGroups.innerHTML='';
     for(let i=0; i<arr.length; i++){
         let p = document.createElement('p')
+        p.style.cursor= 'pointer';
         p.setAttribute('id', arr[i].id)
         p.innerHTML=arr[i].name;
         let button = document.createElement('button')
@@ -34,7 +35,12 @@ function displayGroups(arr){
         removeUserbutton.innerHTML='-User'
         removeUserbutton.onclick = removeButton;
         p.append(removeUserbutton)
+        let changeAdminButton = document.createElement('button')
+        changeAdminButton.innerHTML='Change Admin';
+        changeAdminButton.onclick = changeAdmin;
+        p.append(changeAdminButton);
         divGroups.append(p);
+        p.addEventListener('click', getChat)
     }
 }
 async function addButton(){
@@ -55,13 +61,31 @@ async function removeButton(){
     const res = await axios.post('http://localhost:3000/removeFromGroup', {id: id, mail:email}, {headers:{'Authorization':token}})
     console.log(res.data);
 }
-// async function getChat(id){
-//     const token = localStorage.getItem('token');
-//     const res = await axios.get(`http://localhost:3000/getchat/${id}`,{headers:{'Authorization':token}})
-//     console.log(res.data.data);
-// }
+
+async function changeAdmin(){
+    try{
+    const email = prompt('enter the email of the admin you want to make')
+    const id = this.parentNode.getAttribute("id");
+    const token = localStorage.getItem('token')
+    const res = await axios.post('http://localhost:3000/changeAdmin', {id: id, mail:email}, {headers:{'Authorization':token}})
+    console.log(res.data.message);
+    }
+    catch(err){
+        console.log(err.response.data.message);
+    }
+}
+async function getChat(e){
+    e.preventDefault();
+    //console.log()
+    localStorage.setItem('currentGroupId', e.target.getAttribute('id'));
+    const token = localStorage.getItem('token');
+    const res = await axios.get(`http://localhost:3000/getchat/${e.target.getAttribute('id')}`,{headers:{'Authorization':token}})
+    console.log(res.data.data);
+    displayData(res.data.data)
+}
 async function sendFunc(){
     const obj = {
+        groupId: localStorage.getItem('currentGroupId'),
         message: message.value
     }
     message.value = ''
