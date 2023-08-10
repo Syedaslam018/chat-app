@@ -17,6 +17,7 @@ async function onSubmit(e){
     }
     console.log(obj)
     const data = await axios.post("http://localhost:3000/signup", obj)
+    myForm.reset();
     console.log(data.status);
 }
 catch(err){

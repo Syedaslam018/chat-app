@@ -5,31 +5,35 @@ body {
   h1 {
     text-align: center;
   }
+  #users-list {
+    float: left;
+  }
   #chat-box {
-    justify-content: center;
-    width: 50%;
-    margin:auto;
+    justify-content:left;
+    width: 65%;
     height: 250px;
     border: 1px solid black;
     overflow-y: auto;
+    float: right;
   }
   
   #message-input {
-    width: 50%;
+    width: 65%;
     height: 30px;
     display:block;
     margin: auto;
     border: 1px solid black;
     padding: 5px;
+    float: right;
   }
   
   #send-button {
     width: 100px;
     height: 30px;
-    display: block;
-    margin: auto;
+    margin:auto;
     background-color: #000;
     color: #fff;
     border: none;
     cursor: pointer;
+    float: right;
   }

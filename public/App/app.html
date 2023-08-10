@@ -6,9 +6,15 @@
 </head>
 <body>
     <h1>Chat App</h1>
-  <div id="chat-box"></div>
-  <input type="text" id="message-input" placeholder="Type your message here...">
-  <button id="send-button">Send</button>
+    <div id="holder">
+      <h3>Conversations</h3><button id="create-group" style="display: flex;">Create Group</button>
+      <div id="users-list">
+      </div>
+      <div id="chat-box">
+      </div>
+      <input type="text" id="message-input" placeholder="Type your message here...">
+      <button id="send-button">Send</button>
+    </div>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="index.js"></script>
 </body>

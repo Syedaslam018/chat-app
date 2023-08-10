@@ -1,9 +1,65 @@
 const message = document.getElementById("message-input");
 const  chatBox = document.getElementById("chat-box");
 const button = document.getElementById('send-button');
-localStorage.setItem('arrayOfData', []);
-button.addEventListener('click', sendFunc);
+const createGroup = document.getElementById('create-group')
+const divGroups = document.getElementById('users-list') 
 
+
+localStorage.setItem('arrayOfData', []);
+//events
+button.addEventListener('click', sendFunc);
+createGroup.addEventListener('click', createGroupFunc);
+window.addEventListener("DOMContentLoaded", someFunc)
+
+
+async function createGroupFunc(){
+    const name = prompt('Enter group Name:')
+    const token = localStorage.getItem('token')
+    const data = await axios.post('http://localhost:3000/createGroup', {name: name}, {headers:{'Authorization':token}})
+    console.log(data.data.message);
+
+}
+
+function displayGroups(arr){
+    divGroups.innerHTML='';
+    for(let i=0; i<arr.length; i++){
+        let p = document.createElement('p')
+        p.setAttribute('id', arr[i].id)
+        p.innerHTML=arr[i].name;
+        let button = document.createElement('button')
+        button.innerHTML='+User'
+        button.onclick = addButton;
+        p.append(button)
+        let removeUserbutton = document.createElement('button')
+        removeUserbutton.innerHTML='-User'
+        removeUserbutton.onclick = removeButton;
+        p.append(removeUserbutton)
+        divGroups.append(p);
+    }
+}
+async function addButton(){
+    const email = prompt('enter the email of the user')
+    const id = this.parentNode.getAttribute("id")
+    const token = localStorage.getItem('token');
+    const res = await axios.post('http://localhost:3000/addToGroup', {id: id, mail: email}, {headers:{'Authorization':token}})
+    console.log(res.data);
+
+}
+
+async function removeButton(){
+    const email = prompt('enter the email of the user')
+    const id = this.parentNode.getAttribute("id");
+    console.log(id);
+    const token = localStorage.getItem('token');
+    console.log(token)
+    const res = await axios.post('http://localhost:3000/removeFromGroup', {id: id, mail:email}, {headers:{'Authorization':token}})
+    console.log(res.data);
+}
+// async function getChat(id){
+//     const token = localStorage.getItem('token');
+//     const res = await axios.get(`http://localhost:3000/getchat/${id}`,{headers:{'Authorization':token}})
+//     console.log(res.data.data);
+// }
 async function sendFunc(){
     const obj = {
         message: message.value
@@ -14,30 +70,40 @@ async function sendFunc(){
     console.log(post.data.message);
 }
 
-window.addEventListener("DOMContentLoaded", someFunc)
 async function someFunc(){
-       await updateLocalStorage();
-        const data = JSON.parse(localStorage.getItem('arrayOfData') || "[]");
-        //console.log(data)
-        for(let i=0; i<data.length; i++){
-            displayData(data[i]);
-        }
+    const token = localStorage.getItem('token');
+    const groups = await axios.get('http://localhost:3000/getGroups', {headers:{'Authorization':token}})
+    await updateLocalStorage();
+    const data = JSON.parse(localStorage.getItem('arrayOfData') || "[]");
+    // displayData(data)
+    console.log(groups.data)
+    displayGroups(groups.data.data)
 }
-function displayData(obj){
-    let p = document.createElement('p')
-    p.innerHTML = `${obj.name}: ${obj.text}`
-    chatBox.appendChild(p);
+function displayData(arr){
+    chatBox.innerHTML='';
+    console.log(arr);
+    for(let i=0; i<arr.length; i++){
+        let p = document.createElement('p')
+        p.setAttribute('id', arr[i].userId)
+        if(arr[i].userId == localStorage.getItem('currentUserId')){
+            p.innerHTML = `you: ${arr[i].text}`
+        }
+        else{
+            p.innerHTML=`${arr[i].name}: ${arr[i].text}`;
+        }
+        chatBox.append(p);
+    }
 }
 
-setInterval(async() => {
-    await updateLocalStorage()
-    const data = JSON.parse(localStorage.getItem('arrayOfData') || "[]");
-    //console.log(data)
-    chatBox.innerHTML=''
-        for(let i=0; i<data.length; i++){
-            displayData(data[i]);
-        }
-},1000)
+// setInterval(async() => {
+//     await updateLocalStorage()
+//     const data = JSON.parse(localStorage.getItem('arrayOfData') || "[]");
+//     //console.log(data)
+//     chatBox.innerHTML=''
+//         for(let i=0; i<data.length; i++){
+//             displayData(data[i]);
+//         }
+// },1000)
 
 
 async function updateLocalStorage(){

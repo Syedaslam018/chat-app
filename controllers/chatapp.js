@@ -1,4 +1,5 @@
 const Messages = require('../models/messages')
+const User = require('../models/users')
 const sequelize = require('../routes/util/database')
 const { Op } = require('sequelize')
 
@@ -19,9 +20,17 @@ exports.sendMessage = async (req, res, next) => {
 }
 
 exports.getChat = async(req, res, next) => {
+    const sender = req.user.id
+    const reciever = req.params.userId
+    console.log(req.user.id, req.params.userId);
     const data = await Messages.findAll({
+        where: {
+            id: {
+                [Op.or]: [sender,reciever]
+            }
+        },
         attributes: {
-            exclude: ['userId']
+            exclude: ['groupId', 'createdAt', 'updatedAt']
         }
     })
     res.status(200).json({data: data, success: false})
@@ -36,8 +45,16 @@ exports.getMessages = async (req, res, next) => {
             }
         },
         attributes: {
-            exclude: ['userId', 'createdAt', 'updatedAt']
+            exclude: ['groupId', 'createdAt', 'updatedAt']
         }
     })
     res.status(201).json({data:data, success:true});
 }
+
+// exports.getUsers = async (req, res, next) => {
+//     const data = await User.findAll({
+//         attributes: ['id','name']
+//     })
+//     //console.log(data);
+//     res.status(201).json(data);
+// }
