@@ -2,11 +2,24 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const bcrypt = require('bcrypt');
+const path = require('path')
+const http = require('http')
+const socketIO = require('socket.io')
 require('dotenv').config();
 
 
 const sequelize = require('./routes/util/database');
 const app = express();
+const server = http.createServer(app);
+const io = socketIO(server, {cors: {origin:'*'}})
+
+
+io.on('connection', (socket) => {
+    console.log("Socket.io is Conneted");
+    socket.on("message",(msg,userName,groupId,userId)=>{
+        socket.broadcast.emit("message",msg,userName,groupId,userId)
+    });
+})
 app.use(cors())
 app.use(bodyParser.json({ extended: false }));
 
@@ -23,6 +36,9 @@ const groupRoutes = require('./routes/group')
 app.use(signupRoutes);
 app.use(appRoutes)
 app.use(groupRoutes);
+app.use((req, res, next) => {
+    res.sendFile(path.join(__dirname, `public${req.url}`))
+})
 
 User.hasMany(Messages);
 Messages.belongsTo(User);
@@ -36,7 +52,7 @@ sequelize
 //.sync({force: true})
 .sync()
 .then(user => {
-    app.listen(3000)
+    server.listen(3000)
 })
 .catch(err => {
     console.log(err)

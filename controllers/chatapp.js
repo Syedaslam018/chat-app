@@ -9,8 +9,9 @@ exports.sendMessage = async (req, res, next) => {
     try{
         const message = req.body.message
         const post = await Messages.create({text:message, name: req.user.name, userId: req.user.id, groupId: req.body.groupId}, {transaction: t})  
-        t.commit()
-        res.status(201).json({success:true, message:'message sent succesfully'});
+        t.commit();
+
+        res.status(201).json({success:true, message:'message sent succesfully',text:message, userId:req.user.id,name:req.user.name});
     }
     catch(e){
         t.rollback();

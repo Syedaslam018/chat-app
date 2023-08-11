@@ -18,7 +18,7 @@ async function onSubmit(e){
     localStorage.setItem('token', post.data.token)
     alert('User Logged in successfully')
     localStorage.setItem('currentUserId',parseJwt(localStorage.getItem('token')).id)
-    window.location=`file:///C:/Users/aslam's/Documents/MyStuff/app-chat/public/App/app.html`
+    window.location=`http://localhost:3000/App/app.html`
 
 }
 catch(e){

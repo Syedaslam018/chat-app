@@ -4,6 +4,21 @@ const button = document.getElementById('send-button');
 const createGroup = document.getElementById('create-group')
 const divGroups = document.getElementById('users-list') 
 
+const socket = io.connect("http://localhost:3000");
+
+socket.on('message', (msg, username, groupId,userId) => {
+    if(localStorage.getItem('currentGroupId')){
+        let grpId=localStorage.getItem('currentGroupId');
+        let token = localStorage.getItem('token')
+        //let currentUser=parseJwt(token)
+        if(groupId == grpId){
+          const newPara = document.createElement('p');
+          newPara.innerText = `${username}: ${msg}`;
+          chatBox.appendChild(newPara);
+  
+        }
+       }
+})
 
 localStorage.setItem('arrayOfData', []);
 //events
@@ -81,6 +96,7 @@ async function getChat(e){
     const token = localStorage.getItem('token');
     const res = await axios.get(`http://localhost:3000/getchat/${e.target.getAttribute('id')}`,{headers:{'Authorization':token}})
     console.log(res.data.data);
+    chatBox.innerHTML='';
     displayData(res.data.data)
 }
 async function sendFunc(){
@@ -91,7 +107,11 @@ async function sendFunc(){
     message.value = ''
     const token = localStorage.getItem('token');
     const post = await axios.post('http://localhost:3000/app', obj, {headers:{'Authorization':token}})
-    console.log(post.data.message);
+    console.log(post.data);
+    const arr = []
+    arr.push(post.data)
+    displayData(arr);
+    socket.emit(post.data.msg, post.data.name, localStorage.getItem('currentGroupId'), post.data.userId)
 }
 
 async function someFunc(){
@@ -104,7 +124,6 @@ async function someFunc(){
     displayGroups(groups.data.data)
 }
 function displayData(arr){
-    chatBox.innerHTML='';
     console.log(arr);
     for(let i=0; i<arr.length; i++){
         let p = document.createElement('p')
