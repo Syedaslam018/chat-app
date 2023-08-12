@@ -16,9 +16,13 @@ const io = socketIO(server, {cors: {origin:'*'}})
 
 io.on('connection', (socket) => {
     console.log("Socket.io is Conneted");
-    socket.on("message",(msg,userName,groupId,userId)=>{
+    socket.on('message',(msg,userName,groupId,userId)=>{
         socket.broadcast.emit("message",msg,userName,groupId,userId)
     });
+    socket.on("file",(message,userName,groupId,userId)=>{
+        socket.broadcast.emit("file",message,userName,userId)
+
+    })
 })
 app.use(cors())
 app.use(bodyParser.json({ extended: false }));

@@ -12,8 +12,12 @@
       </div>
       <div id="chat-box">
       </div>
-      <input type="text" id="message-input" placeholder="Type your message here...">
-      <button id="send-button">Send</button>
+      <form enctype="multipart/form-data">
+        <input type="text" id="message-input" placeholder="Type your message here..."><input type="file" id="uploadBtn">
+        <button id="send-button" onclick="sendFunc(event)">Send</button>
+      </form>
+      <div id="input-feilds">
+      </div>
     </div>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>

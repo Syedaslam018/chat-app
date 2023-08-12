@@ -6,23 +6,54 @@ const divGroups = document.getElementById('users-list')
 
 const socket = io.connect("http://localhost:3000");
 
-socket.on('message', (msg, username, groupId,userId) => {
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  
+    return JSON.parse(jsonPayload);
+  }
+
+socket.on('message', (msg, userName, groupId,userId) => {
     if(localStorage.getItem('currentGroupId')){
         let grpId=localStorage.getItem('currentGroupId');
         let token = localStorage.getItem('token')
         //let currentUser=parseJwt(token)
         if(groupId == grpId){
+            console.log('ye andar aagaya')
           const newPara = document.createElement('p');
-          newPara.innerText = `${username}: ${msg}`;
+          newPara.innerText = `${userName}: ${msg}`;
           chatBox.appendChild(newPara);
   
         }
        }
 })
 
+socket.on("file",(message,userName,groupId,userId) => {
+    if(localStorage.getItem('currentGroupId')){
+      let grpId=localStorage.getItem('currentGroupId');
+      const token = localStorage.getItem('token')
+      let currentuser=parseJwt(token);
+      const chats=document.getElementById('chatBox'); 
+  
+      if(groupId == grpId){
+      let newpara=document.createElement('p');
+      let fileLink = document.createElement('a');
+      fileLink.href=message;
+      fileLink.innerText="click to see(download)";
+  
+      newpara.appendChild(document.createTextNode(`${userName}:`))
+      newpara.appendChild(fileLink);
+     chats.append(newpara)
+  
+      }  
+    }
+  })
+
 localStorage.setItem('arrayOfData', []);
 //events
-button.addEventListener('click', sendFunc);
 createGroup.addEventListener('click', createGroupFunc);
 window.addEventListener("DOMContentLoaded", someFunc)
 
@@ -95,24 +126,73 @@ async function getChat(e){
     localStorage.setItem('currentGroupId', e.target.getAttribute('id'));
     const token = localStorage.getItem('token');
     const res = await axios.get(`http://localhost:3000/getchat/${e.target.getAttribute('id')}`,{headers:{'Authorization':token}})
-    console.log(res.data.data);
     chatBox.innerHTML='';
     displayData(res.data.data)
 }
-async function sendFunc(){
-    const obj = {
-        groupId: localStorage.getItem('currentGroupId'),
-        message: message.value
+async function sendFunc(event){
+    console.log(document.getElementById('uploadBtn').files[0])
+    event.preventDefault();
+    if(document.getElementById('uploadBtn').files[0] !== undefined){
+
+        const token = localStorage.getItem('token');
+        const groupId=localStorage.getItem('currentGroupId');
+        let file=document.getElementById('uploadBtn').files[0];
+        let formData=new FormData();
+        formData.append("file", file)
+        const headers={
+          "Authorization":token,
+          'Content-Type':'multipart/form-data'
+    
+        }
+    
+        const res=await axios.post(`http://localhost:3000/app/upload/${groupId}`,formData,{headers})
+    
+        showfilelink(res.data.userFile);
+        socket.emit("file",res.data.userFile.message,res.data.userFile.name,groupId,res.data.userFile.userId)
+        }
+    else{
+        const groupId =  localStorage.getItem('currentGroupId');
+        const obj = {
+            message: message.value
+        }
+        message.value = ''
+        const token = localStorage.getItem('token');
+        const post = await axios.post(`http://localhost:3000/app/${groupId}`, obj, {headers:{'Authorization':token}})
+        console.log(post.data);
+        showTextMsg(post.data);
+        socket.emit('message',post.data.text, post.data.name, localStorage.getItem('currentGroupId'), post.data.userId)
     }
-    message.value = ''
-    const token = localStorage.getItem('token');
-    const post = await axios.post('http://localhost:3000/app', obj, {headers:{'Authorization':token}})
-    console.log(post.data);
-    const arr = []
-    arr.push(post.data)
-    displayData(arr);
-    socket.emit(post.data.msg, post.data.name, localStorage.getItem('currentGroupId'), post.data.userId)
+    
 }
+function showTextMsg(obj){
+    const p = document.createElement('p');
+    p.innerHTML=`You: ${obj.text}`
+    chatBox.append(p);
+}
+
+function showfilelink(userFile){
+    const token = localStorage.getItem('token')
+    let currentuser=parseJwt(token);
+    const chats=document.getElementById('chatBox'); 
+    let newpara=document.createElement('p');
+    let fileLink = document.createElement('a');
+  
+    fileLink.href=userFile.message;
+    fileLink.innerText="click to see(download)";
+  
+    if(userFile.userId == currentuser.id){
+      newpara.appendChild(document.createTextNode(`You:`))
+    }
+  
+    else{
+      newpara.appendChild(document.createTextNode(`${userFile.name}:`))
+    }
+  
+   newpara.appendChild(fileLink);
+   chatBox.append(newpara)
+  
+  
+  }
 
 async function someFunc(){
     const token = localStorage.getItem('token');
@@ -125,17 +205,41 @@ async function someFunc(){
 }
 function displayData(arr){
     console.log(arr);
-    for(let i=0; i<arr.length; i++){
-        let p = document.createElement('p')
-        p.setAttribute('id', arr[i].userId)
-        if(arr[i].userId == localStorage.getItem('currentUserId')){
-            p.innerHTML = `you: ${arr[i].text}`
+    const token = localStorage.getItem('token')
+    const currentUserId = localStorage.getItem('currentUserId');
+    chatBox.innerHTML='';
+    console.log(arr);
+    if(arr.length>10)
+    {
+        arr = arr.slice(arr.length-10)
+    }
+    for (const chat of arr) {
+        const newPara = document.createElement('p');
+     if(chat.type == 'text'){
+        if (chat.userId == currentUserId) {
+          newPara.innerText = `You: ${chat.text}`;
+        } else {
+          newPara.innerText = `${chat.name}: ${chat.text}`;
+        }
+  
+      }
+  
+      else{
+        let fileLink = document.createElement('a');
+        fileLink.href=chat.text;
+        fileLink.innerText="click to see(download)";
+  
+        if(chat.userId == currentUserId){
+          newPara.appendChild(document.createTextNode(`You:`))
         }
         else{
-            p.innerHTML=`${arr[i].name}: ${arr[i].text}`;
-        }
-        chatBox.append(p);
-    }
+          newPara.appendChild(document.createTextNode(`${chat.name}:`))
+        } 
+        newPara.appendChild(fileLink);
+      }
+  
+        chatBox.append(newPara);
+      }
 }
 
 // setInterval(async() => {

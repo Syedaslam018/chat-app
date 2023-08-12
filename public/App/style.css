@@ -9,7 +9,7 @@ body {
     float: left;
   }
   #chat-box {
-    justify-content:left;
+    justify-content:center;
     width: 50%;
     height: 250px;
     border: 1px solid black;
@@ -37,3 +37,8 @@ body {
     cursor: pointer;
     float: right;
   }
+
+#uploadFile{
+  float:right;
+  padding: 20px;
+}
