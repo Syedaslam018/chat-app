@@ -62,17 +62,17 @@ async function createGroupFunc(){
     const name = prompt('Enter group Name:')
     const token = localStorage.getItem('token')
     const data = await axios.post('http://localhost:3000/createGroup', {name: name}, {headers:{'Authorization':token}})
-    console.log(data.data.message);
+    displayGroup(data.data)
 
 }
 
-function displayGroups(arr){
-    divGroups.innerHTML='';
-    for(let i=0; i<arr.length; i++){
+function displayGroup(obj){
+    const token = localStorage.getItem('token')
+    const user = parseJwt(token)
         let p = document.createElement('p')
         p.style.cursor= 'pointer';
-        p.setAttribute('id', arr[i].id)
-        p.innerHTML=arr[i].name;
+        p.setAttribute('id', obj.id)
+        p.innerHTML=obj.name;
         let button = document.createElement('button')
         button.innerHTML='+User'
         button.onclick = addButton;
@@ -86,16 +86,20 @@ function displayGroups(arr){
         changeAdminButton.onclick = changeAdmin;
         p.append(changeAdminButton);
         divGroups.append(p);
+        if(obj.createdBy !== user.email){
+            button.style.visibility='hidden'
+            removeUserbutton.style.visibility='hidden'
+            changeAdminButton.style.visibility='hidden'
+        }
         p.addEventListener('click', getChat)
-    }
 }
 async function addButton(){
     const email = prompt('enter the email of the user')
     const id = this.parentNode.getAttribute("id")
+    console.log(id)
     const token = localStorage.getItem('token');
     const res = await axios.post('http://localhost:3000/addToGroup', {id: id, mail: email}, {headers:{'Authorization':token}})
     console.log(res.data);
-
 }
 
 async function removeButton(){
@@ -195,13 +199,7 @@ function showfilelink(userFile){
   }
 
 async function someFunc(){
-    const token = localStorage.getItem('token');
-    const groups = await axios.get('http://localhost:3000/getGroups', {headers:{'Authorization':token}})
-    await updateLocalStorage();
-    const data = JSON.parse(localStorage.getItem('arrayOfData') || "[]");
-    // displayData(data)
-    console.log(groups.data)
-    displayGroups(groups.data.data)
+    displayGroups()
 }
 function displayData(arr){
     console.log(arr);
@@ -253,12 +251,21 @@ function displayData(arr){
 // },1000)
 
 
-async function updateLocalStorage(){
+// async function updateLocalStorage(){
+//     const token = localStorage.getItem('token')
+//     let oldData = JSON.parse(localStorage.getItem('arrayOfData') || "[]");
+//     const lastMessageId = (oldData.length === 0)?-1:oldData[oldData.length-1].id;
+//     const data = await axios.get(`http://localhost:3000/getMessages?lastMessageId=${lastMessageId}`, {headers:{'Authorization':token}})
+//     let newData = data.data.data
+//     let mergedData = [...oldData, ...newData]
+//     localStorage.setItem('arrayOfData', JSON.stringify(mergedData));
+// }
+async function displayGroups(){
     const token = localStorage.getItem('token')
-    let oldData = JSON.parse(localStorage.getItem('arrayOfData') || "[]");
-    const lastMessageId = (oldData.length === 0)?-1:oldData[oldData.length-1].id;
-    const data = await axios.get(`http://localhost:3000/getMessages?lastMessageId=${lastMessageId}`, {headers:{'Authorization':token}})
-    let newData = data.data.data
-    let mergedData = [...oldData, ...newData]
-    localStorage.setItem('arrayOfData', JSON.stringify(mergedData));
+    const userId = localStorage.getItem('currentUserId')
+    const res = await axios.get('http://localhost:3000/getGroups', {headers:{'Authorization':token}})
+    for(let i=0; i<res.data.data.length; i++){
+        displayGroup(res.data.data[i])
+    }
+
 }

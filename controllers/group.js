@@ -3,13 +3,14 @@ const UserGroups = require('../models/user-groups')
 const User = require('../models/users')
 
 
-exports.createGroup = (req, res, next) => {
+exports.createGroup = async (req, res, next) => {
     try{
     console.log(req.body.name)
-    req.user.createGroup({name: req.body.name, createdBy: req.user.email},{through: {
+    const data = await req.user.createGroup({name: req.body.name, createdBy: req.user.email},{through: {
         userId:req.user.id
     }})
-    res.status(201).json({message: 'created group successfully'})
+    console.log(data.dataValues.createdBy);
+    res.status(201).json({message: 'created group successfully',name: req.body.name, id: data.dataValues.id, createdBy: data.dataValues.createdBy})
 }
 catch(err){
     console.log(err)
@@ -19,7 +20,7 @@ catch(err){
 
 exports.getGroups =async (req, res, next) => {
     const groups = await req.user.getGroups({
-        attributes: ['id', 'name']
+        attributes: ['id', 'name', 'createdBy']
     })
     //console.log(groups);
     res.status(200).json({data:groups, success:true})

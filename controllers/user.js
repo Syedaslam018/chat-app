@@ -3,8 +3,8 @@ const User = require('../models/users')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-function getWebToken(id,name, boolSome){
-    return jwt.sign({id: id, name: name}, '1qwrte4favsf4AhtqwoT')
+function getWebToken(id,name,email, boolSome){
+    return jwt.sign({id: id, name: name, email:email}, process.env.SECRET_KEY)
 }
 
 exports.addUser = async (req, res, next) => {
@@ -49,7 +49,7 @@ exports.getUser = async (req, res, next) => {
                 res.status(401).json({success: false, message: 'incorrect password'});
             }
             if(result){
-                res.status(201).json({success: true, message: 'user logged in successfully', token: getWebToken(user.id, user.name)});
+                res.status(201).json({success: true, message: 'user logged in successfully', token: getWebToken(user.id, user.name, user.email)});
             }
         })
     }

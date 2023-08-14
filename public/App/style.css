@@ -1,6 +1,12 @@
 body {
     font-family: sans-serif;
     justify-self: center;
+    background-color: #b0c7c6;
+  }
+
+  #create-group{
+    background-color: #13bbb398;
+
   }
   h1 {
     text-align: center;
@@ -9,6 +15,7 @@ body {
     float: left;
   }
   #chat-box {
+    background-color: #B0E9E6;
     justify-content:center;
     width: 50%;
     height: 250px;
@@ -20,25 +27,19 @@ body {
   #message-input {
     width: 50%;
     height: 30px;
-    display:block;
-    margin: auto;
     border: 1px solid black;
-    padding: 5px;
-    float: right;
   }
   
   #send-button {
     width: 100px;
     height: 30px;
-    margin:auto;
     background-color: #000;
     color: #fff;
     border: none;
     cursor: pointer;
-    float: right;
   }
 
-#uploadFile{
-  float:right;
-  padding: 20px;
+#input-data{
+  display: inline-block;
+  margin: auto;
 }
