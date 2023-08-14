@@ -3,6 +3,20 @@ const User = require('../models/users')
 const sequelize = require('../routes/util/database')
 const { Op } = require('sequelize')
 const AWS = require('aws-sdk');
+const ArchivedChat = require('../models/archivedchat');
+const { QueryTypes } = require('sequelize');
+
+const CronJob = require('cron').CronJob;
+
+var job = new CronJob(
+    '0 0 1 * * *',
+    async function() {
+        const data =await sequelize.query("insert into archivedchats select * from messages where DATE(updatedAt) = CURRENT_DATE()", { type: QueryTypes.SELECT });
+        const anothoerData = await sequelize.query("delete from messages where DATE(createdAt) = CURRENT_DATE() - 1")
+    },
+    null,
+    true
+)
 
 exports.sendMessage = async (req, res, next) => {
     //console.log(req.user.name);

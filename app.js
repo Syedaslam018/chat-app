@@ -31,6 +31,7 @@ const User = require('./models/users')
 const Messages = require('./models/messages')
 const Groups = require('./models/groups')
 const UserGroups = require('./models/user-groups')
+const ArchivedChat = require('./models/archivedchat')
 
 
 const signupRoutes = require('./routes/user');
