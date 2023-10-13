@@ -1,4 +1,4 @@
-body {
+/* body {
     font-family: sans-serif;
     justify-self: center;
     background-color: #b0c7c6;
@@ -42,4 +42,193 @@ body {
 #input-data{
   display: inline-block;
   margin: auto;
+} */
+
+/* Global Styles */
+/* body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+}
+
+/* Chat App Styles */
+/* #holder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#create-group {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+#users-list {
+  float: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#chat-box {
+  height: 300px;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+#input-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#message-input {
+  flex: 1;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+#uploadBtn {
+  display: none;
+}
+
+#send-button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+/* Chat Message Styles */
+
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+}
+
+/* Chat App Styles */
+#holder {
+  display: flex;
+  flex-direction: row; /* Changed from column to row */
+  justify-content: space-between; /* Added to create space between the two divs */
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#create-group {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+#users-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#chat-box {
+  flex: 1; /* Added to make the div take up remaining space */
+  height: 300px;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+#chat-box,
+#users-list {
+  width: 50%; /* Added to make both divs take up equal width */
+}
+
+#input-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#message-input {
+  flex: 1;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+#uploadBtn {
+  display: none;
+}
+
+#send-button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+/* Chat Message Styles */
+p {
+  margin: 5px 0;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* Group Styles */
+#users-list p {
+  cursor: pointer;
+}
+
+button {
+  margin-left: 5px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 600px) {
+  #holder {
+    flex-direction: column; /* Changed back to column for smaller screens */
+  }
+
+  #chat-box,
+  #users-list {
+    width: 100%; /* Changed to full width for smaller screens */
+  }
+
+  #chat-box {
+    height: 200px;
+  }
 }
